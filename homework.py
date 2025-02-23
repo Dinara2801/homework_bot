@@ -64,7 +64,7 @@ def check_tokens():
     if lost_tokens:
         raise SystemExit(
             'Отсутствуют необходимые переменные окружения: '
-            f'{','.join(lost_tokens)}.'
+            f'{",".join(lost_tokens)}.'
         )
 
 
