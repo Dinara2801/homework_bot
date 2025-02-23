@@ -104,7 +104,7 @@ def parse_status(homework):
     if status not in HOMEWORK_VERDICTS:
         log_and_raise(KeyError, f'Неожиданный статус работы: {status}')
     return (
-        f'Изменился статус проверки работы "{homework['homework_name']}". '
+        f'Изменился статус проверки работы "{homework["homework_name"]}". '
         f'{HOMEWORK_VERDICTS[status]}'
     )
 
