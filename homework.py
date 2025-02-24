@@ -9,6 +9,8 @@ from telebot import TeleBot
 from telebot.apihelper import ApiException
 import requests
 
+from exceptions import InvalidResponseCode
+
 load_dotenv()
 
 
@@ -41,12 +43,6 @@ logging.basicConfig(
         logging.FileHandler(log_file_path, encoding='utf-8')
     ]
 )
-
-
-class InvalidResponseCode(Exception):
-    """Исключение для некорректного кода ответа API."""
-
-    pass
 
 
 def check_tokens():
@@ -88,8 +84,9 @@ def get_api_answer(timestamp):
     }
     logging.debug(
         'Начинаем запрос к API: %(url)s '
-        'с заголовком: %(headers)s и параметрами: %(params)s',
-        request_data
+        'с заголовком: %(headers)s и параметрами: %(params)s'.format(
+            **request_data
+        )
     )
     try:
         response = requests.get(**request_data)
@@ -149,16 +146,14 @@ def main():
                 logging.debug('Новых домашних работ нет.')
                 continue
             message = parse_status(homeworks[0])
-            if message != last_message:
-                if send_message(bot, message):
-                    last_message = message
-            timestamp = response.get('current_date')
+            if (message != last_message) and send_message(bot, message):
+                last_message = message
+                timestamp = response.get('current_date', int(time.time()))
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
             logging.exception(message)
-            if message != last_message:
-                if send_message(bot, message):
-                    last_message = message
+            if (message != last_message) and send_message(bot, message):
+                last_message = message
         finally:
             time.sleep(RETRY_PERIOD)
 
