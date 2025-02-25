@@ -83,8 +83,8 @@ def get_api_answer(timestamp):
         'params': {'from_date': timestamp}
     }
     logging.debug(
-        'Начинаем запрос к API: %(url)s '
-        'с заголовком: %(headers)s и параметрами: %(params)s'.format(
+        'Начинаем запрос к API: {url} '
+        'с заголовком: {headers} и параметрами: {params}'.format(
             **request_data
         )
     )
@@ -148,7 +148,7 @@ def main():
             message = parse_status(homeworks[0])
             if (message != last_message) and send_message(bot, message):
                 last_message = message
-                timestamp = response.get('current_date', int(time.time()))
+                timestamp = response.get('current_date', timestamp)
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
             logging.exception(message)
